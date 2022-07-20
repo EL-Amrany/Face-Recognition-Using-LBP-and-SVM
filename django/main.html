@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVC Classifier</title>
+    <script src="{% static 'js/script.js' %}" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>SVC Classifier</h1>
+
+{##}
+{#    <form action="" method="get">#}
+{#        <label for="img">Select image:</label>#}
+{#        <input type="file" id="img" name="img" accept="image/*">#}
+{#        <input type="submit">#}
+{#    </form>#}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="file" name="img" id="fileId" accept="image/*" onchange="imageUploaded()">
+        <button onclick="predict()">
+        Predict
+        </button>
+{#        <button type="submit" value="ok">ok</button>#}
+    </form>
+
+    <br><br>
+    <button onclick="displayString()">
+        Display String
+    </button>
+    <h1 id="serverResponse"></h1>
+
+
+    <form method="post">
+        <input type="file" name="file" id="file" onchange="encodeImgtoBase64(this)">
+        <button type="submit">Submit</button>
+        <br><br>
+{#        <textarea id="base64Code" rows="15" cols="68"></textarea>#}
+        <br><br>
+        <img src="" id="base64Img" width="500">
+    </form>
+
+
+
+
+    <script type="text/javascript">
+
+
+
+
+
+        console.log(typeof (image_name))
+        function encodeImgtoBase64(element) {
+
+            var selected_image = document.getElementById("file");
+            var image_name = selected_image.value;
+
+            {#alert("You selected " + selected_image.value);#}
+            {#console.log(selected_image.value);#}
+
+            var file = element.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                $("#base64Code").val(reader.result);
+                $("#convertImg").text(reader.result);
+                $("#base64Img").attr("src", reader.result);
+
+
+            }
+        reader.readAsDataURL(file);
+            $.ajax({
+                url: 'http://127.0.0.1:8000/test',
+                type: 'post',
+                data: {
+                    image: image_name
+                },
+
+            success: function (data, status) {
+                console.info(data + ' status ' +  status);
+            }
+            });
+        }
+
+
+
+</script>
+
+
+
+<script>
+/*
+    url = 'http://127.0.0.1:8000/test'
+
+	$.post(url, {
+      name: "OMAR EL BACHYR",
+      city: "FES"
+    },
+    function(data, status){
+      console.log("Data: " + data + "\nStatus: " + status);
+    });
+
+    /*
+      $.ajax({
+    url: 'http://127.0.0.1:8000/test',
+    type: 'post',
+    data: {
+        name: 'OMAR ELBACHYR'
+    },
+
+    success: function (data) {
+        console.info(data);
+    }
+}); */
+
+    /*
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+        const serverResponse = document.getElementById("serverResponse");
+        serverResponse.innerHTML = this.responseText;
+
+
+    url = 'http://127.0.0.1:8000/test'
+
+    xhr.open("POST", url);
+
+    xhr.setRequestHeader("content-type", "text");
+    xhr.send("name=omar")}; */
+</script>
+
+
+</body>
+</html>
